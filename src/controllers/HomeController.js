@@ -122,6 +122,10 @@ function handlePostback(sender_psid, received_postback) {
         response = { text: "Thanks!" };
     } else if (payload === "no") {
         response = { text: "Oops, try sending another image." };
+    } else if (payload === "GET_STARTED") {
+        response = {
+            text: "Chào mừng bạn đến với chatbot của Nam. Đây là bản demo sẽ hoàn thiện trong thời gian tới!",
+        };
     }
     // Send the message to acknowledge the postback
     callSendAPI(sender_psid, response);
