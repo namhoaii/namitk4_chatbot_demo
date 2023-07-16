@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 
-let callSendAPI = (response) => {
+let callSendAPI = (sender_psid, response) => {
     // Construct the message body
     let request_body = {
         recipient: {
@@ -31,11 +31,36 @@ let callSendAPI = (response) => {
     );
 };
 
-let handleGetStarted = () => {
+let getUserName = (sender_psid) => {
+    return new Promise((resolve, reject) => {
+        request(
+            {
+                uri: `https://graph.facebook.com/${sender_psid}?fields=first_name,last_name,profile_pic&access_token=${PAGE_ACCESS_TOKEN}`,
+                method: "GET",
+            },
+            (err, res, body) => {
+                if (!err) {
+                    body = JSON.parse(res);
+
+                    let username = `${responds.last_name} ${responds.first_name}`;
+                    resolve(username);
+                } else {
+                    console.error("Unable to send message:" + err);
+                    reject(err);
+                }
+            }
+        );
+    });
+};
+
+let handleGetStarted = async (sender_psid) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let response = { text: "OK!" };
-            await this.callSendAPI(response);
+            let username = await getUserName(sender_psid);
+            let response = {
+                text: `Xin chào ${username}. Chào mừng bạn đến với page của mình!`,
+            };
+            await callSendAPI(sender_psid, response);
             resolve("Done!");
         } catch (e) {
             reject(e);
